@@ -5,17 +5,24 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addLike, removeLike, deletePost } from '../../actions/post';
 
-const PostItem = ({ auth, post: {_id, text, name, avatar, user, likes, comments, date, addLike, removeLike, deletePost }}) => 
+const PostItem = ({ 
+  addLike,
+  removeLike,
+  deletePost,
+  auth,
+  post: { _id, text, name, avatar, user, likes, comments, date },
+  showActions
+}) => 
   <div class="post bg-white p-1 my-1">
     <div>
-      <a href="profile.html">
+      <Link to={`/profile/${user}`}>
         <img
           class="round-img"
           src={avatar}
           alt=""
         />
         <h4>{name}</h4>
-      </a>
+      </Link>
     </div>
     <div>
       <p class="my-1">
@@ -24,7 +31,10 @@ const PostItem = ({ auth, post: {_id, text, name, avatar, user, likes, comments,
         <p class="post-date">
           Posted on <Moment format="YYYY/MM/DD">{date}</Moment>
       </p>
-      <button onClick={e => addLike(_id)} type="button" class="btn btn-light">
+
+      {showActions === true && 
+      <React.Fragment>
+        <button onClick={e => addLike(_id)} type="button" class="btn btn-light">
         <i class="fas fa-thumbs-up"></i>{" "}
         <span>
         {likes.length > 0 && (
@@ -34,7 +44,7 @@ const PostItem = ({ auth, post: {_id, text, name, avatar, user, likes, comments,
       <button onClick={e => removeLike(_id)} type="button" class="btn btn-light">
         <i class="fas fa-thumbs-down"></i>
       </button>
-      <Link to={`/post/${_id}`} class="btn btn-primary">
+      <Link to={`/posts/${_id}`} class="btn btn-primary">
         Discussion {" "}
         {comments.length > 0 && (
           <span class='comment-count'>{comments.length}</span>
@@ -45,9 +55,14 @@ const PostItem = ({ auth, post: {_id, text, name, avatar, user, likes, comments,
           <i class="fas fa-times"></i>
         </button>
       }
-      
+      </React.Fragment>}
     </div>
   </div>
+
+
+PostItem.defaultProps = {
+  showActions: true
+}
 
 PostItem.propTypes = {
   post: PropTypes.object.isRequired,
